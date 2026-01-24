@@ -1,35 +1,54 @@
 import streamlit as st
 import pickle
+import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# Cache model loading
-@st.cache_resource
-def load_sentiment_model():
-    return load_model("sentiment_model.keras")
+# ---------- Page Config ----------
+st.set_page_config(
+    page_title="Movie Review Sentiment Analyzer",
+    page_icon="🎬",
+    layout="centered"
+)
 
+# ---------- Load Model & Tokenizer (cached) ----------
 @st.cache_resource
-def load_tokenizer():
+def load_artifacts():
+    model = load_model("sentiment_model.keras")
     with open("tokenizer.pkl", "rb") as f:
-        return pickle.load(f)
+        tokenizer = pickle.load(f)
+    return model, tokenizer
 
-model = load_sentiment_model()
-tokenizer = load_tokenizer()
+model, tokenizer = load_artifacts()
 
-# UI
-st.title("🎬 Movie Review Sentiment Analysis")
+# ---------- UI ----------
+st.title("🎬 Movie Review Sentiment Analyzer")
+st.write(
+    "Enter a movie review below and the model will predict whether the sentiment is **Positive** or **Negative**."
+)
 
-review = st.text_area("Enter your movie review")
+review = st.text_area(
+    "✍️ Write your movie review here:",
+    height=150,
+    placeholder="The movie was amazing, with great performances and a strong storyline..."
+)
 
-if st.button("Predict Sentiment"):
+# ---------- Prediction ----------
+if st.button("🔍 Predict Sentiment"):
     if review.strip() == "":
-        st.warning("Please enter a review")
+        st.warning("⚠️ Please enter a review before clicking predict.")
     else:
-        seq = tokenizer.texts_to_sequences([review])
-        padded = pad_sequences(seq, maxlen=200, padding="post")
+        sequence = tokenizer.texts_to_sequences([review])
+        padded = pad_sequences(sequence, maxlen=200)
+
         prediction = model.predict(padded)[0][0]
 
+        st.markdown("---")
         if prediction > 0.5:
-            st.success("😊 Positive Sentiment")
+            st.success(f"✅ **Positive Sentiment** \n\nConfidence: `{prediction:.2f}`")
         else:
-            st.error("😞 Negative Sentiment")
+            st.error(f"❌ **Negative Sentiment** \n\nConfidence: `{1 - prediction:.2f}`")
+
+# ---------- Footer ----------
+st.markdown("---")
+st.caption("Built with ❤️ using LSTM, TensorFlow & Streamlit")
