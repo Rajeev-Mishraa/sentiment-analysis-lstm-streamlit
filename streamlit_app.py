@@ -1,36 +1,31 @@
 import streamlit as st
-import requests
+import pickle
+import numpy as np
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# FastAPI endpoint
-API_URL = "http://127.0.0.1:8000//predict"
+# Load model
+model = load_model("sentiment_model.keras")
 
-st.set_page_config(page_title="Sentiment Analysis App", page_icon="💬")
+# Load tokenizer
+with open("tokenizer.pkl", "rb") as f:
+    tokenizer = pickle.load(f)
 
-st.title("💬 Sentiment Analysis App")
-st.write("Enter a review and get instant sentiment prediction using an LSTM model.")
+# Streamlit UI
+st.title("🎬 Movie Review Sentiment Analysis")
+st.write("Enter a movie review and predict its sentiment")
 
-# Input text
-review = st.text_area("Enter your review here:")
+review = st.text_area("Enter your review")
 
 if st.button("Predict Sentiment"):
     if review.strip() == "":
-        st.warning("Please enter some text")
+        st.warning("Please enter a review")
     else:
-        response = requests.post(
-            API_URL,
-            json={"review": review}
-        )
+        seq = tokenizer.texts_to_sequences([review])
+        padded = pad_sequences(seq, maxlen=200, padding="post")
+        prediction = model.predict(padded)[0][0]
 
-        if response.status_code == 200:
-            result = response.json()
-            sentiment = result["sentiment"]
-
-            if sentiment == "Positive":
-                st.success(f"✅ Sentiment: {sentiment}")
-            else:
-                st.error(f"❌ Sentiment: {sentiment}")
+        if prediction > 0.5:
+            st.success("😊 Positive Sentiment")
         else:
-            st.error("API Error. Make sure FastAPI server is running.")
-
-import streamlit as st
-st.write("🚀 Streamlit is running")
+            st.error("😞 Negative Sentiment")
