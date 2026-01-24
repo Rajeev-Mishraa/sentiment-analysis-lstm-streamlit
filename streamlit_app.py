@@ -1,21 +1,25 @@
 import streamlit as st
 import pickle
-import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# Load model
-model = load_model("sentiment_model.keras")
+# Cache model loading
+@st.cache_resource
+def load_sentiment_model():
+    return load_model("sentiment_model.keras")
 
-# Load tokenizer
-with open("tokenizer.pkl", "rb") as f:
-    tokenizer = pickle.load(f)
+@st.cache_resource
+def load_tokenizer():
+    with open("tokenizer.pkl", "rb") as f:
+        return pickle.load(f)
 
-# Streamlit UI
+model = load_sentiment_model()
+tokenizer = load_tokenizer()
+
+# UI
 st.title("🎬 Movie Review Sentiment Analysis")
-st.write("Enter a movie review and predict its sentiment")
 
-review = st.text_area("Enter your review")
+review = st.text_area("Enter your movie review")
 
 if st.button("Predict Sentiment"):
     if review.strip() == "":
