@@ -11,15 +11,11 @@ st.set_page_config(
     layout="centered"
 )
 
-# ---------- Load Model & Tokenizer (cached) ----------
-@st.cache_resource
-def load_artifacts():
-    model = load_model("sentiment_model.keras")
-    with open("tokenizer.pkl", "rb") as f:
-        tokenizer = pickle.load(f)
-    return model, tokenizer
+# ---------- Load Model & Tokenizer ----------
+model = load_model("sentiment_model.keras")
 
-model, tokenizer = load_artifacts()
+with open("tokenizer.pkl", "rb") as f:
+    tokenizer = pickle.load(f)
 
 # ---------- UI ----------
 st.title("🎬 Movie Review Sentiment Analyzer")
@@ -52,3 +48,4 @@ if st.button("🔍 Predict Sentiment"):
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Built with ❤️ using LSTM, TensorFlow & Streamlit")
+
