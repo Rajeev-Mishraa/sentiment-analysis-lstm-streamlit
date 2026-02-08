@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # ---------- Load Model & Tokenizer ----------
-model = load_model("sentiment_model.keras", compile=False)
+model = load_model("sentiment_model.keras")
 
 with open("tokenizer.pkl", "rb") as f:
     tokenizer = pickle.load(f)
@@ -48,5 +48,6 @@ if st.button("🔍 Predict Sentiment"):
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Built with ❤️ using LSTM, TensorFlow & Streamlit")
+
 
 
