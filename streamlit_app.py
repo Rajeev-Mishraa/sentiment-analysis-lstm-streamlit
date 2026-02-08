@@ -66,10 +66,13 @@ if st.button("🔍 Predict Sentiment"):
         st.markdown("---")
         if prediction > 0.6:
             st.success(f"✅ **Positive Sentiment**\n\nConfidence: `{prediction:.2f}`")
+        elif prediction < 0.4:
+            st.success(f"✅ **Negative Sentiment**\n\nConfidence: `{prediction:.2f}`")
         else:
-            st.error(f"❌ **Negative Sentiment**\n\nConfidence: `{1 - prediction:.2f}`")
+            st.error(f"❌ **Neutral Sentiment**\n\nConfidence: `{1 - prediction:.2f}`")
 
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Built with ❤️ using LSTM, TensorFlow & Streamlit")
+
 
