@@ -61,11 +61,12 @@ scipy==1.15.3
 six==1.17.0
 smmap==5.0.2
 starlette==0.50.0
-streamlit==1.53.1
+streamlit==1.32.2
 tenacity==9.1.2
 tensorboard==2.20.0
 tensorboard-data-server==0.7.2
-tensorflow==2.20.0
+tensorflow==2.15.0
+keras==2.15.0
 termcolor==3.3.0
 threadpoolctl==3.6.0
 toml==0.10.2
@@ -78,4 +79,6 @@ uvicorn==0.40.0
 watchdog==6.0.0
 Werkzeug==3.1.5
 wrapt==2.0.1
+numpy
+pickle-mixin
 
